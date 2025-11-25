@@ -1,0 +1,26 @@
+openai:
+  name: "openai"
+  model: "gpt-5"
+  cost_per_token: 0.00002
+  latency_ms: 200
+  rate_limit_rpm: 100
+  specialties:
+    - "code"
+    - "analysis"
+    - "writing"
+  quality_score: 0.95
+  api_key_var: "openai_api_key"
+  provider_class: "app.providers.openai.OpenAIProvider"
+
+google:
+  name: "google"
+  model: "gemini-3-pro"
+  cost_per_token: 0.000015
+  latency_ms: 250
+  rate_limit_rpm: 150
+  specialties:
+    - "writing"
+    - "analysis"
+  quality_score: 0.94
+  api_key_var: "google_api_key"
+  provider_class: "app.providers.google.GoogleProvider"

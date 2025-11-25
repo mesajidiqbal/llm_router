@@ -1,0 +1,26 @@
+# Classifier keyword configuration
+# These keywords are used to classify prompts into categories
+
+code:
+  - def
+  - class
+  - import
+  - exception
+  - function
+  - variable
+  - loop
+  - algorithm
+  - debug
+
+writing:
+  - essay
+  - blog
+  - email
+  - summarize
+  - article
+  - letter
+  - story
+  - draft
+  - compose
+
+# Note: All other prompts default to "analysis" category

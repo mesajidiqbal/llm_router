@@ -21,6 +21,17 @@ wheels/
 *.egg
 MANIFEST
 
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+.hypothesis/
+
+# Linting
+.ruff_cache/
+
+
 # Virtual environments
 venv/
 ENV/
@@ -41,8 +52,13 @@ Thumbs.db
 # Logs
 *.log
 
-# Environment variables (user secrets should use Replit secrets manager)
-.env.local
+# Environment variables
+.env.*
+!.env.example
+!.env.test
+
+# Docker
+.dockerignore
 
 # Replit
 .pythonlibs/
@@ -50,6 +66,3 @@ Thumbs.db
 .cache/
 .config/
 .local/
-
-# Docker
-.dockerignore

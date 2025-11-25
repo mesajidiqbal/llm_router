@@ -1,0 +1,394 @@
+{
+  "info": {
+    "_postman_id": "b6a7b8c9-d0e1-4f2a-8b3c-9d0e1f2a3b4c",
+    "name": "LLM-Router",
+    "description": "Collection for testing the LLM Router Service API.\n\nThis collection includes examples for:\n- Health monitoring\n- Chat completions with different priorities\n- Provider management and status\n- Analytics and metrics\n- Circuit breaker testing\n- Budget enforcement testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Service Health",
+      "item": [
+        {
+          "name": "Root - Service Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                ""
+              ]
+            },
+            "description": "Get basic service information including version and API docs links."
+          },
+          "response": []
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "health"
+              ]
+            },
+            "description": "Check service health and provider availability.\n\nReturns:\n- status: 'healthy' or 'degraded'\n- providers_available: Number of healthy providers\n- providers_total: Total configured providers"
+          },
+          "response": []
+        }
+      ],
+      "description": "Basic health and service information endpoints"
+    },
+    {
+      "name": "2. Chat Completions",
+      "item": [
+        {
+          "name": "Basic Request (Cost Priority)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"prompt\": \"Write a short poem about coding.\",\n    \"preferences\": {\n        \"priority\": \"cost\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/chat/completions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chat",
+                "completions"
+              ]
+            },
+            "description": "Basic chat request with cost priority.\nRoutes to the cheapest available provider."
+          },
+          "response": []
+        },
+        {
+          "name": "Speed Priority",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"prompt\": \"What is 2+2?\",\n    \"preferences\": {\n        \"priority\": \"speed\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/chat/completions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chat",
+                "completions"
+              ]
+            },
+            "description": "Request with speed priority.\nRoutes to the fastest provider with lowest latency."
+          },
+          "response": []
+        },
+        {
+          "name": "Quality Priority",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"prompt\": \"Explain quantum entanglement in simple terms.\",\n    \"preferences\": {\n        \"priority\": \"quality\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/chat/completions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chat",
+                "completions"
+              ]
+            },
+            "description": "Request with quality priority.\nRoutes to the highest quality provider based on quality score."
+          },
+          "response": []
+        },
+        {
+          "name": "Code Task (Classification)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"prompt\": \"Write a Python function to calculate fibonacci numbers recursively.\",\n    \"preferences\": {\n        \"priority\": \"quality\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/chat/completions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chat",
+                "completions"
+              ]
+            },
+            "description": "Code-related request to test prompt classification.\nContains code keywords that trigger 'code' classification.\nProviders with 'code' specialty will get a 10% boost."
+          },
+          "response": []
+        },
+        {
+          "name": "Writing Task (Classification)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"prompt\": \"Write an essay about the importance of clean code.\",\n    \"preferences\": {\n        \"priority\": \"cost\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/chat/completions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chat",
+                "completions"
+              ]
+            },
+            "description": "Writing-related request to test classification.\nContains writing keywords that trigger 'writing' classification.\nProviders with 'writing' specialty will get a boost."
+          },
+          "response": []
+        },
+        {
+          "name": "With Budget Cap",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"prompt\": \"This is a test prompt.\",\n    \"preferences\": {\n        \"priority\": \"cost\",\n        \"max_cost_per_request\": 0.00001\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/chat/completions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chat",
+                "completions"
+              ]
+            },
+            "description": "Request with very low budget cap.\nFilters out providers that exceed the cost limit.\nMay return 503 if no providers are within budget."
+          },
+          "response": []
+        },
+        {
+          "name": "With User ID (Budget Tracking)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"prompt\": \"Tell me about machine learning.\",\n    \"user_id\": \"test_user_123\",\n    \"preferences\": {\n        \"priority\": \"cost\"\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/chat/completions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chat",
+                "completions"
+              ]
+            },
+            "description": "Request with user_id for budget tracking.\nTracks spending per user up to $1.00 limit.\nReturns 402 Payment Required if user exceeds budget."
+          },
+          "response": []
+        },
+        {
+          "name": "With Timeout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"prompt\": \"Quick test.\",\n    \"preferences\": {\n        \"priority\": \"speed\",\n        \"timeout_ms\": 2000\n    }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/chat/completions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "chat",
+                "completions"
+              ]
+            },
+            "description": "Request with custom timeout (2 seconds).\nProvider must respond within timeout or request fails."
+          },
+          "response": []
+        }
+      ],
+      "description": "Chat completion requests with various configurations"
+    },
+    {
+      "name": "3. Provider Management",
+      "item": [
+        {
+          "name": "Get All Providers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/providers",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "providers"
+              ]
+            },
+            "description": "Get status of all configured providers.\n\nReturns:\n- Provider specifications (model, cost, latency)\n- Health status (is_down, circuit_status)\n- Success rates and metrics\n- Specialties and quality scores"
+          },
+          "response": []
+        },
+        {
+          "name": "Simulate Provider Failure",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"provider\": \"openai\",\n    \"down\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/simulate/failure",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "simulate",
+                "failure"
+              ]
+            },
+            "description": "Mark a provider as down for testing.\n\nUse this to:\n- Test circuit breaker behavior\n- Verify automatic failover\n- Demonstrate resilience patterns\n\nProvider will be excluded from routing until restored."
+          },
+          "response": []
+        },
+        {
+          "name": "Restore Provider",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"provider\": \"openai\",\n    \"down\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/simulate/failure",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "simulate",
+                "failure"
+              ]
+            },
+            "description": "Restore a previously marked-down provider.\n\nSets provider back to operational state.\nProvider will be available for routing again."
+          },
+          "response": []
+        }
+      ],
+      "description": "Provider status and management endpoints"
+    },
+    {
+      "name": "4. Analytics & Monitoring",
+      "item": [
+        {
+          "name": "Get Routing Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/routing/analytics",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "routing",
+                "analytics"
+              ]
+            },
+            "description": "Get comprehensive routing analytics.\n\nReturns:\n- Global metrics (total requests, success rate, avg latency)\n- Per-provider metrics (requests, success rates, latency)\n- Circuit breaker states\n- Total costs\n\nUse for:\n- Monitoring system performance\n- Identifying problematic providers\n- Tracking cost trends\n- Generating reports"
+          },
+          "response": []
+        }
+      ],
+      "description": "Analytics and performance monitoring"
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ]
+}

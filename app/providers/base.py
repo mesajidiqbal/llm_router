@@ -1,12 +1,13 @@
 from abc import ABC, abstractmethod
+
 from app.models import ChatResponse
 
 
-class RateLimitError(Exception):
-    pass
-
-
 class ProviderClient(ABC):
+    """
+    Abstract base class for all LLM providers.
+    """
+
     def __init__(self, name: str):
         self.name = name
 
